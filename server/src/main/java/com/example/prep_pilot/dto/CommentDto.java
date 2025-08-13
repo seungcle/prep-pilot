@@ -26,7 +26,7 @@ public class CommentDto {
     private Boolean isDeleted;
     private String createdAt;
     private String updatedAt;
-    private Long userId;
+    private String nickname;
 
     public static CommentDto toDto(Comment c) {
 
@@ -42,7 +42,7 @@ public class CommentDto {
                 c.getIsDeleted(),
                 c.getCreatedAt().format(formatter),
                 updatedAtStr,
-                c.getUser().getId()
+                c.getUser().getNickname()
         );
     }
 }

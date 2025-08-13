@@ -29,6 +29,10 @@ public class PostsDto {
 
     private String nickname;
 
+    private Long commentCounts;
+
+    private Long likesCounts;
+
     public static PostsDto toDto(Posts posts) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일");
@@ -42,7 +46,9 @@ public class PostsDto {
                 posts.getIsPrivate(),
                 posts.getCreatedAt().format(formatter),
                 updatedAtStr,
-                posts.getUser().getNickname()
+                posts.getUser().getNickname(),
+                0L,
+                0L
         );
     }
 }
