@@ -30,7 +30,7 @@ public class User {
 
     private String nickname;
 
-    private String bio;
+    private String bio; // 소개글
 
     @Column(name = "profile_image_url")
     private String profileImageUrl;
