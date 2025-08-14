@@ -6,10 +6,7 @@ import com.example.prep_pilot.entity.Posts;
 import com.example.prep_pilot.entity.User;
 import com.example.prep_pilot.exception.PostsNotAuthorException;
 import com.example.prep_pilot.exception.PostsNotFoundException;
-import com.example.prep_pilot.repository.CommentRepository;
-import com.example.prep_pilot.repository.LikesRepository;
-import com.example.prep_pilot.repository.PostsRepository;
-import com.example.prep_pilot.repository.UserRepository;
+import com.example.prep_pilot.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,13 +19,15 @@ public class PostsService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final LikesRepository likesRepository;
+    private final ViewsRepository viewsRepository;
 
-    public PostsService(PostsRepository postsRepository, UserRepository userRepository, CommentRepository commentRepository, LikesRepository likesRepository){
+    public PostsService(PostsRepository postsRepository, UserRepository userRepository, CommentRepository commentRepository, LikesRepository likesRepository, ViewsRepository viewsRepository){
 
         this.postsRepository = postsRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.likesRepository = likesRepository;
+        this.viewsRepository = viewsRepository;
     }
 
     public Page<PostsDto> getRecentPosts(int page, int pageSize) {
@@ -91,5 +90,31 @@ public class PostsService {
         postsRepository.delete(target);
 
         return PostsDto.toDto(target);
+    }
+
+    public Page<PostsDto> getMyWatchedPosts(int page, int pageSize, String username) {
+
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+        Page<Posts> postsPage = viewsRepository.findPostsByUserUsernameOrderByCreatedAtDesc(username, pageRequest);
+
+        return postsPage.map(posts -> {
+            PostsDto dto = PostsDto.toDto(posts);
+            dto.setCommentCounts((long) commentRepository.findByPostsId(dto.getId()).size());
+            dto.setLikesCounts(likesRepository.countByPostsId(dto.getId()));
+            return dto;
+        });
+    }
+
+    public Page<PostsDto> getMyLikePosts(int page, int pageSize, String username) {
+
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+        Page<Posts> postsPage = likesRepository.findPostsByUserUsernameOrderByCreatedAtDesc(username, pageRequest);
+
+        return postsPage.map(posts -> {
+            PostsDto dto = PostsDto.toDto(posts);
+            dto.setCommentCounts((long) commentRepository.findByPostsId(dto.getId()).size());
+            dto.setLikesCounts(likesRepository.countByPostsId(dto.getId()));
+            return dto;
+        });
     }
 }

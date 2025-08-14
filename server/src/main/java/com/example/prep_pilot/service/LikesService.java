@@ -7,6 +7,7 @@ import com.example.prep_pilot.exception.PostsNotFoundException;
 import com.example.prep_pilot.repository.LikesRepository;
 import com.example.prep_pilot.repository.PostsRepository;
 import com.example.prep_pilot.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class LikesService {
         return likesRepository.countByPostsId(postsId);
     }
 
+    @Transactional
     public Long pushLikes(String username, Long postsId) {
 
         User user = userRepository.findByUsername(username);

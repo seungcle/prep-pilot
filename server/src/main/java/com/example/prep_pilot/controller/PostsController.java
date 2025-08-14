@@ -2,7 +2,6 @@ package com.example.prep_pilot.controller;
 
 import com.example.prep_pilot.dto.CustomUserDetails;
 import com.example.prep_pilot.dto.PostsDto;
-import com.example.prep_pilot.entity.Posts;
 import com.example.prep_pilot.service.PostsService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -66,5 +65,29 @@ public class PostsController {
         PostsDto postsDto = postsService.deletePost(id, username);
 
         return ResponseEntity.status(HttpStatus.OK).body(postsDto);
+    }
+
+    // 내가 본 글 목록
+    @GetMapping("/posts/read")
+    public ResponseEntity<Page<PostsDto>> getMyWatchedPosts(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                            @RequestParam(defaultValue = "0") int page){
+
+        int pageSize = 12;
+        String username = userDetails.getUsername();
+        Page<PostsDto> dtoPage = postsService.getMyWatchedPosts(page, pageSize, username);
+
+        return ResponseEntity.status(HttpStatus.OK).body(dtoPage);
+    }
+
+    // 내가 좋아요 누른 글 목록
+    @GetMapping("/posts/likes")
+    public ResponseEntity<Page<PostsDto>> getMyLikePosts(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                         @RequestParam(defaultValue = "0") int page){
+
+        int pageSize = 12;
+        String username = userDetails.getUsername();
+        Page<PostsDto> dtoPage = postsService.getMyLikePosts(page, pageSize, username);
+
+        return ResponseEntity.status(HttpStatus.OK).body(dtoPage);
     }
 }

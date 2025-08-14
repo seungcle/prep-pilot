@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class FollowsController {
 
@@ -35,11 +37,29 @@ public class FollowsController {
     // 팔로잉 중인지
     @GetMapping("/{userId}/follows")
     public Boolean isFollowing(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                               @PathVariable Long userId){
+                               @PathVariable Long userId){
 
         String username = userDetails.getUsername();
 
         return followsService.isFollowing(username, userId);
+    }
+
+    // primary key가 id인 유저의 팔로워
+    @GetMapping("/{id}/followers")
+    public ResponseEntity<List<FollowsDto>> showFollowers(@PathVariable Long id){
+
+        List<FollowsDto> followsDtoList = followsService.getFollower(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(followsDtoList);
+    }
+
+    // primary key가 id인 유저의 팔로잉
+    @GetMapping("/{id}/followings")
+    public ResponseEntity<List<FollowsDto>> showFollowings(@PathVariable Long id){
+
+        List<FollowsDto> followsDtoList = followsService.getFollowings(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(followsDtoList);
     }
 
 }
