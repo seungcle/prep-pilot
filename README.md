@@ -18,7 +18,7 @@
 
 ---
 
-## 🖥️ 기술 스택
+##  기술 스택
 
 - **Frontend**: React, SCSS, Zustand, Tanstack/React-Query
 - **Backend**: Spring Boot, MySql  
